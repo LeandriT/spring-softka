@@ -187,8 +187,13 @@ SET row_security = off;
 -- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
 --
 
-
 CREATE USER "customer" WITH PASSWORD 'bxshaq06gi4hgdss'; 
+--
+CREATE DATABASE customers WITH TEMPLATE = template0 ENCODING = 'UTF8';
+
+ALTER DATABASE customers OWNER TO customer;
+
+\connect customer
 --
 -- TOC entry 3310 (class 0 OID 0)
 -- Dependencies: 3
