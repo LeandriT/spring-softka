@@ -18,7 +18,7 @@ services:
 
   db_account:
     image: postgres:15
-    container_name: postgres
+    container_name: db_account_postgres
     environment:
       POSTGRES_DB: account
       POSTGRES_USER: account

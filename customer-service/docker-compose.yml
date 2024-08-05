@@ -15,9 +15,9 @@ services:
 
   db_customer:
     image: postgres:15
-    container_name: postgres
+    container_name: db_customer_postgres
     environment:
-      POSTGRES_DB: customer
+      POSTGRES_DB: customers
       POSTGRES_USER: customer
       POSTGRES_PASSWORD: bxshaq06gi4hgdss
     ports:
