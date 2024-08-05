@@ -1,17 +1,16 @@
 version: '3.8'
 
 services:
-  app:
+  customer_service:
     build: .
     container_name: customer_service
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db_customer:5432/customer
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db_customer:5432/customers
       SPRING_DATASOURCE_USERNAME: customer
       SPRING_DATASOURCE_PASSWORD: bxshaq06gi4hgdss
-    depends_on:
-      - db_customer
+      MS_NAME: customer_service
     restart: unless-stopped
 
   db_customer:

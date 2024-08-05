@@ -4,7 +4,7 @@ app:
   environment: ${ENVIRONMENT:dev}
   ms:
     customer-service:
-      url: ${customer_service_url:http://localhost:8080}
+      url: ${CUSTOMER_SERVICE_URL:http://localhost:8080}
 spring:
   main:
     allow-bean-definition-overriding: true

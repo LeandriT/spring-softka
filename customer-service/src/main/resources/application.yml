@@ -1,3 +1,7 @@
+app:
+  description: customer service is a Spring Boot applications
+  name: customer_service
+  environment: ${ENVIRONMENT:dev}
 spring:
   main:
     allow-bean-definition-overriding: true

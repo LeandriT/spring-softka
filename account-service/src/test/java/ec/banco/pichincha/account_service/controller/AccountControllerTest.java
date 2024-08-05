@@ -37,6 +37,9 @@ class AccountControllerTest {
     @MockBean
     private AccountService service;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @InjectMocks
     private AccountController customerController;
     String path = "/accounts";
@@ -78,7 +81,7 @@ class AccountControllerTest {
 
         mockMvc.perform(post(path)
                         .contentType("application/json")
-                        .content(new ObjectMapper().writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.uuid").value(Matchers.equalTo(customerDto.getUuid().toString()))); // Adjust the jsonPath as per your DTO
     }
@@ -113,6 +116,7 @@ class AccountControllerTest {
         object.setNumber(new SecureRandom().nextInt(10) + "");
         object.setStatus(true);
         object.setType("AHORROS");
+        object.setCustomerUuid(UUID.randomUUID());
         return object;
     }
 
@@ -122,6 +126,7 @@ class AccountControllerTest {
         object.setActualBalance(BigDecimal.valueOf(100));
         object.setInitialBalance(BigDecimal.ZERO);
         object.setNumber(new SecureRandom().nextInt(10) + "");
+        object.setCustomerUuid(UUID.randomUUID());
         return object;
     }
 }
