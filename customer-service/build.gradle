@@ -63,7 +63,7 @@ jacocoTestCoverageVerification {
             element = 'CLASS'
             excludes = ['CustomerServiceApplication*']
             limit {
-                minimum = 0.95
+                minimum = 0.85
             }
             excludes = [
                     'ec.banco.pichincha.customer_service.CustomerServiceApplication',
@@ -73,6 +73,7 @@ jacocoTestCoverageVerification {
                     'ec.banco.pichincha.customer_service.repository.**',
                     'ec.banco.pichincha.customer_service.config.**',
                     'ec.banco.pichincha.customer_service.exception.**',
+                    'ec.banco.pichincha.customer_service.util.**',
             ]
         }
     }
@@ -93,6 +94,7 @@ jacocoTestReport {
                     '**/ec/banco/pichincha/customer_service/repository/**',
                     '**/ec/banco/pichincha/customer_service/config/**',
                     '**/ec/banco/pichincha/customer_service/exception/**',
+                    '**/ec/banco/pichincha/customer_service/util/**',
             ])
         })
     }

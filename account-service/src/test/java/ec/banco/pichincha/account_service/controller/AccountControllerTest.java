@@ -3,20 +3,26 @@ package ec.banco.pichincha.account_service.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ec.banco.pichincha.account_service.dto.account.v1.request.AccountRequest;
 import ec.banco.pichincha.account_service.dto.account.v1.response.AccountDto;
+import ec.banco.pichincha.account_service.dto.reports.v1.AccountStatementReport;
+import ec.banco.pichincha.account_service.dto.reports.v1.CustomerReport;
 import ec.banco.pichincha.account_service.service.AccountService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -25,8 +31,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AccountController.class)
 class AccountControllerTest {
@@ -108,6 +113,39 @@ class AccountControllerTest {
 
         mockMvc.perform(delete(path + "/{uuid}", uuid))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void reportV1_ReturnsAccountStatementReports() throws Exception {
+        // Datos de prueba
+        UUID customerUuid = UUID.randomUUID();
+        String startDate = "2023-07-01";
+        String endDate = "2023-07-31";
+        Pageable pageable = Pageable.unpaged();
+
+        CustomerReport customerReport = new CustomerReport();
+        customerReport.setName("John Doe");
+
+        AccountStatementReport accountStatementReport = AccountStatementReport.builder()
+                .customer(customerReport)
+                .build();
+
+        Page<AccountStatementReport> accountStatementReports = new PageImpl<>(
+                Collections.singletonList(accountStatementReport), pageable, 1);
+
+        // Mockear la respuesta del servicio
+        Mockito.when(service.accountStatementReport(any(Pageable.class), any(UUID.class), any(LocalDate.class), any(LocalDate.class)))
+                .thenReturn(accountStatementReports);
+
+        // Realizar la solicitud y verificar la respuesta
+        mockMvc.perform(get(path + "/reports")
+                        .param("customerUuid", customerUuid.toString())
+                        .param("startDate", startDate)
+                        .param("endDate", endDate)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(accountStatementReports)));
     }
 
     private AccountRequest buildRequest() {
