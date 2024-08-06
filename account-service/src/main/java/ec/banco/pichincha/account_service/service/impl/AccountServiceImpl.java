@@ -26,7 +26,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -97,7 +99,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public Page<AccountStatementReport> accountStatementReport(Pageable pageable, UUID customerUuid, LocalDate startDate, LocalDate endDate) {
         Page<Account> accountsPage = repository.findByCustomerUuidAndStartDateAndEndDate(
-                pageable, customerUuid, startDate.atStartOfDay(), endDate.atTime(LocalTime.MAX)
+                pageable, customerUuid, dateToString(startDate.atStartOfDay()), dateToString(endDate.atTime(LocalTime.MAX))
         );
         this.validateCustomerExists(customerUuid);
         CustomerDto customerDto = client.show(customerUuid);
@@ -118,6 +120,11 @@ public class AccountServiceImpl implements AccountService {
         return new PageImpl<>(
                 accountStatementReports, pageable, accountsPage.getTotalElements()
         );
+    }
+
+    String dateToString(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        return dateTime.format(formatter);
     }
 
     void validateCustomerExists(UUID customerUuid) {
