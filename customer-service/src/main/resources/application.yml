@@ -16,9 +16,9 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/customers}
-    username: ${SPRING_DATASOURCE_USERNAME:customer}
-    password: ${SPRING_DATASOURCE_PASSWORD:bxshaq06gi4hgdss}
+    url: jdbc:postgresql://localhost:5432/customers
+    username: postgres
+    password: postgres
     hikari:
       maximum-pool-size: 100
       minimum-idle: 5
