@@ -1,37 +1,44 @@
 # Account Service
 
-El `account-service` es un microservicio responsable de gestionar las cuentas de los usuarios, así como las transacciones asociadas. Permite la creación, actualización, eliminación y consulta de cuentas y transacciones, además de la generación de reportes.
+El `account-service` es un microservicio responsable de gestionar las cuentas de los usuarios, así como las transacciones asociadas. Permite la
+creación, actualización, eliminación y consulta de cuentas y transacciones, además de la generación de reportes.
 
 ## Endpoints
 
 ### 1. Gestión de Cuentas
 
 #### Obtener todas las cuentas (paginado)
+
 - **Endpoint:** `/accounts`
 - **Método:** `GET`
 - **Descripción:** Obtiene una lista paginada de todas las cuentas registradas.
 
 #### Obtener detalles de una cuenta específica
+
 - **Endpoint:** `/accounts/{uuid}`
 - **Método:** `GET`
 - **Descripción:** Obtiene los detalles de una cuenta específica mediante su UUID.
 
 #### Actualizar una cuenta
+
 - **Endpoint:** `/accounts/{uuid}`
 - **Método:** `PATCH`
 - **Descripción:** Actualiza los detalles de una cuenta específica.
 
 #### Crear una nueva cuenta
+
 - **Endpoint:** `/accounts`
 - **Método:** `POST`
 - **Descripción:** Crea una nueva cuenta.
 
 #### Eliminar una cuenta
+
 - **Endpoint:** `/accounts/{uuid}`
 - **Método:** `DELETE`
 - **Descripción:** Elimina una cuenta específica.
 
 #### Generar reporte de estado de cuenta
+
 - **Endpoint:** `/accounts/reports`
 - **Método:** `GET`
 - **Descripción:** Genera un reporte de estado de cuenta en un rango de fechas para un cliente específico.
@@ -39,26 +46,31 @@ El `account-service` es un microservicio responsable de gestionar las cuentas de
 ### 2. Gestión de Transacciones
 
 #### Obtener todas las transacciones (paginado)
+
 - **Endpoint:** `/transactions`
 - **Método:** `GET`
 - **Descripción:** Obtiene una lista paginada de todas las transacciones registradas.
 
 #### Obtener detalles de una transacción específica
+
 - **Endpoint:** `/transactions/{uuid}`
 - **Método:** `GET`
 - **Descripción:** Obtiene los detalles de una transacción específica mediante su UUID.
 
 #### Crear una nueva transacción
+
 - **Endpoint:** `/transactions`
 - **Método:** `POST`
 - **Descripción:** Crea una nueva transacción.
 
 #### Actualizar una transacción
+
 - **Endpoint:** `/transactions/{uuid}`
 - **Método:** `PATCH`
 - **Descripción:** Actualiza los detalles de una transacción específica.
 
 #### Eliminar una transacción
+
 - **Endpoint:** `/transactions/{uuid}`
 - **Método:** `DELETE`
 - **Descripción:** Elimina una transacción específica.
@@ -66,6 +78,7 @@ El `account-service` es un microservicio responsable de gestionar las cuentas de
 ## Modelos de Datos
 
 ### AccountRequest
+
 - **Descripción:** Modelo que representa la información de una cuenta.
 - **Campos:**
     - `number`: `String` - Número de cuenta. No puede ser nulo.
@@ -80,6 +93,7 @@ El `account-service` es un microservicio responsable de gestionar las cuentas de
         - **Validación:** `@NotNull(message = "customer_uuid cannot be null", groups = {OnCreate.class})`
 
 ### TransactionRequest
+
 - **Descripción:** Modelo que representa la información de una transacción.
 - **Campos:**
     - `date`: `LocalDateTime` - Fecha de la transacción. No puede ser nulo.
@@ -92,6 +106,7 @@ El `account-service` es un microservicio responsable de gestionar las cuentas de
         - **Validación:** `@NotNull(message = "account uuid cannot be null", groups = {OnCreate.class, OnUpdate.class})`
 
 ### AccountStatementReport
+
 - **Descripción:** Modelo que representa el reporte de estado de cuenta.
 - **Campos:**
     - `content`: Lista de reportes de clientes con sus cuentas y transacciones.
@@ -118,7 +133,8 @@ El `account-service` es un microservicio responsable de gestionar las cuentas de
 
 ## Validaciones
 
-- La creación y actualización de cuentas y transacciones utiliza validaciones específicas definidas en los grupos `OnCreate` y `OnUpdate` para garantizar que los campos requeridos estén presentes y correctos.
+- La creación y actualización de cuentas y transacciones utiliza validaciones específicas definidas en los grupos `OnCreate` y `OnUpdate` para
+  garantizar que los campos requeridos estén presentes y correctos.
 
 ## Ejemplos de Uso
 

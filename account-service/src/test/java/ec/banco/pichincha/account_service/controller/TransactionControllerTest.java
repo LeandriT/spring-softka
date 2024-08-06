@@ -97,14 +97,14 @@ class TransactionControllerTest {
     @Test
     public void testUpdate() throws Exception {
         UUID uuid = UUID.randomUUID();
-        TransactionRequest request = new TransactionRequest();
+        TransactionRequest request = this.buildRequest();
         TransactionDto dto = this.buildDto();
         dto.setUuid(uuid);
         when(service.update(eq(uuid), any(TransactionRequest.class))).thenReturn(dto);
 
         mockMvc.perform(patch(path + "/{uuid}", uuid)
                         .contentType("application/json")
-                        .content(new ObjectMapper().writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.uuid").value(Matchers.equalTo(dto.getUuid().toString()))); // Adjust the jsonPath as per your DTO
     }

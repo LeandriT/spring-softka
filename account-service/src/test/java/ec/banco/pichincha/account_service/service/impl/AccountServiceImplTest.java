@@ -4,6 +4,8 @@ import ec.banco.pichincha.account_service.clients.customer.CustomerClient;
 import ec.banco.pichincha.account_service.clients.customer.dto.CustomerDto;
 import ec.banco.pichincha.account_service.dto.account.v1.request.AccountRequest;
 import ec.banco.pichincha.account_service.dto.account.v1.response.AccountDto;
+import ec.banco.pichincha.account_service.dto.reports.v1.AccountStatementReport;
+import ec.banco.pichincha.account_service.dto.reports.v1.CustomerReport;
 import ec.banco.pichincha.account_service.eventHandler.accountEventDto.AccountBalanceDto;
 import ec.banco.pichincha.account_service.exception.AccountNotFoundException;
 import ec.banco.pichincha.account_service.exception.CustomerNotFoundException;
@@ -22,12 +24,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -197,4 +201,52 @@ class AccountServiceImplTest {
         assertEquals("Account doest no exists " + accountBalanceDto.getAccountUuid(), exception.getMessage());
     }
 
+    @Test
+    void accountStatementReport_ReturnsExpectedPage() {
+        // Datos de prueba
+        UUID customerUuid = UUID.randomUUID();
+        LocalDate startDate = LocalDate.now().minusDays(30);
+        LocalDate endDate = LocalDate.now();
+        Pageable pageable = Pageable.unpaged();
+
+        Account account = new Account();
+        account.setType("AHORROS");
+        account.setActualBalance(BigDecimal.valueOf(1000.00));
+        account.setNumber("123456");
+        account.setInitialBalance(BigDecimal.valueOf(500.00));
+        account.setTransactions(Collections.emptySet());
+
+        Page<Account> accountsPage = new PageImpl<>(Collections.singletonList(account), pageable, 1);
+
+        CustomerDto customerDto = new CustomerDto();
+        customerDto.setName("John Doe");
+
+        CustomerReport customerReport = new CustomerReport();
+        customerReport.setName("John Doe");
+
+        when(repository.findByCustomerUuidAndStartDateAndEndDate(
+                any(Pageable.class),
+                any(UUID.class),
+                any(String.class),
+                any(String.class)))
+                .thenReturn(accountsPage);
+
+        when(client.show(customerUuid)).thenReturn(customerDto);
+
+        AccountStatementReport accountStatementReport = AccountStatementReport.builder()
+                .customer(customerReport)
+                .build();
+        Page<AccountStatementReport> expectedPage = new PageImpl<>(
+                List.of(accountStatementReport), pageable, accountsPage.getTotalElements());
+
+        // Ejecutar el método bajo prueba
+        Page<AccountStatementReport> result = accountService.accountStatementReport(pageable, customerUuid, startDate, endDate);
+
+        // Comparar los contenidos de las páginas
+        assertEquals(expectedPage.getTotalElements(), result.getTotalElements());
+        assertEquals(expectedPage.getTotalPages(), result.getTotalPages());
+        assertEquals(expectedPage.getSize(), result.getSize());
+        assertEquals(expectedPage.getNumber(), result.getNumber());
+
+    }
 }

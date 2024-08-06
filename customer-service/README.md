@@ -1,10 +1,12 @@
 # Customer Service
 
-El `account-service` es un microservicio responsable de gestionar los usuarios. Permite la creación, actualización, eliminación y consulta de clientes.
+El `account-service` es un microservicio responsable de gestionar los usuarios. Permite la creación, actualización, eliminación y consulta de
+clientes.
 
 ## Endpoints
 
 ### 1. Obtener todos los clientes (paginado)
+
 - **Endpoint:** `/customers`
 - **Método:** `GET`
 - **Descripción:** Obtiene una lista paginada de todos los clientes registrados.
@@ -12,6 +14,7 @@ El `account-service` es un microservicio responsable de gestionar los usuarios. 
     - `200 OK`: Devuelve una lista paginada de objetos `CustomerDto`.
 
 ### 2. Obtener detalles de un cliente específico
+
 - **Endpoint:** `/customers/{uuid}`
 - **Método:** `GET`
 - **Descripción:** Obtiene los detalles de un cliente específico mediante su UUID.
@@ -19,6 +22,7 @@ El `account-service` es un microservicio responsable de gestionar los usuarios. 
     - `200 OK`: Devuelve un objeto `CustomerDto` con los detalles del cliente.
 
 ### 3. Crear un nuevo cliente
+
 - **Endpoint:** `/customers`
 - **Método:** `POST`
 - **Descripción:** Crea un nuevo cliente.
@@ -27,6 +31,7 @@ El `account-service` es un microservicio responsable de gestionar los usuarios. 
     - `201 CREATED`: Devuelve un objeto `CustomerDto` con los detalles del cliente creado.
 
 ### 4. Actualizar un cliente
+
 - **Endpoint:** `/customers/{uuid}`
 - **Método:** `PATCH`
 - **Descripción:** Actualiza los detalles de un cliente específico.
@@ -35,6 +40,7 @@ El `account-service` es un microservicio responsable de gestionar los usuarios. 
     - `200 OK`: Devuelve un objeto `CustomerDto` con los detalles del cliente actualizado.
 
 ### 5. Eliminar un cliente
+
 - **Endpoint:** `/customers/{uuid}`
 - **Método:** `DELETE`
 - **Descripción:** Elimina un cliente específico.
@@ -44,6 +50,7 @@ El `account-service` es un microservicio responsable de gestionar los usuarios. 
 ## Modelos de Datos
 
 ### CustomerRequest
+
 - **Descripción:** Modelo que representa la información de un cliente.
 - **Campos:**
     - `clientId`: `String` - ID del cliente.
@@ -63,6 +70,7 @@ El `account-service` es un microservicio responsable de gestionar los usuarios. 
         - **Validación:** `@NotNull(message = "Phone cannot be null", groups = {OnCreate.class})`
 
 ### CustomerDto
+
 - **Descripción:** Modelo que representa la información detallada de un cliente.
 - **Campos:**
     - `uuid`: `UUID` - Identificador único del cliente.
@@ -77,7 +85,8 @@ El `account-service` es un microservicio responsable de gestionar los usuarios. 
 
 ## Validaciones
 
-- La creación y actualización de clientes utiliza validaciones específicas definidas en el grupo `OnCreate` para garantizar que los campos requeridos estén presentes y correctos.
+- La creación y actualización de clientes utiliza validaciones específicas definidas en el grupo `OnCreate` para garantizar que los campos requeridos
+  estén presentes y correctos.
 
 ## Ejemplos de Uso
 
