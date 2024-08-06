@@ -1,0 +1,16 @@
+#instalar docker
+#instalar docker desktop
+#habilitar k8s en docker desktop
+#instalar minikube
+
+#costumer service
+gradle clean build
+docker build -t customer_service:latest .
+
+#account service
+gradle clean build
+docker build -t account_service:latest .
+
+#EXPONER SERVICIO INTERNO
+kubectl port-forward account-service-77944f68d7-zd24b 30010:8080
+kubectl port-forward customer-service-6cf5d48c67-2r4mc 30011:8080
