@@ -16,5 +16,6 @@ public interface AccountMapper {
 
     AccountDto toDto(Account customer);
 
+    @Mapping(target = "customerUuid", ignore = true)
     Account updateModel(AccountRequest request, @MappingTarget Account entity);
 }

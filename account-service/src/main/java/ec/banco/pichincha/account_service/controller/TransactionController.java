@@ -1,6 +1,7 @@
 package ec.banco.pichincha.account_service.controller;
 
 import ec.banco.pichincha.account_service.dto.retentions.OnCreate;
+import ec.banco.pichincha.account_service.dto.retentions.OnUpdate;
 import ec.banco.pichincha.account_service.dto.transaction.v1.request.TransactionRequest;
 import ec.banco.pichincha.account_service.dto.transaction.v1.response.TransactionDto;
 import ec.banco.pichincha.account_service.service.TransactionService;
@@ -37,7 +38,7 @@ public class TransactionController {
     }
 
     @PatchMapping("/{uuid}")
-    public ResponseEntity<TransactionDto> update(@PathVariable UUID uuid, @RequestBody TransactionRequest request) {
+    public ResponseEntity<TransactionDto> update(@PathVariable UUID uuid, @Validated(OnUpdate.class) @RequestBody TransactionRequest request) {
         return new ResponseEntity<>(service.update(uuid, request), HttpStatus.OK);
     }
 

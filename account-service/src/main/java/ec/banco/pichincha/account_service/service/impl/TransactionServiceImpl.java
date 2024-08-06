@@ -52,13 +52,18 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional
     public TransactionDto update(UUID uuid, TransactionRequest request) {
+        this.validateTransactionType(request);
         String message = String.format("Transaction doest no exists %s", uuid);
         Transaction entity = repository.findById(uuid).orElseThrow(() -> new AccountNotFoundException(message));
-        this.validateBalance(entity, request);
+        this.buildAccount(entity, request.getAccountUuid());
+        this.validateInsufficientFounds(entity.getAccount(), request);
+        this.buildTransactionType(request, entity);
         entity = mapper.updateModel(request, entity);
-        entity.setBalance(entity.getBalance().add(request.getAmount()));
         repository.save(entity);
+        AccountBalanceDto accountBalanceDto = this.buildAccountBalanceDto(entity.getAccount().getUuid(), entity.getBalance());
+        applicationEventPublisher.publishEvent(accountBalanceDto);
         return mapper.toDto(entity);
     }
 
@@ -74,14 +79,6 @@ public class TransactionServiceImpl implements TransactionService {
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
-    void validateBalance(Transaction entity, TransactionRequest request) {
-        BigDecimal balance = entity.getBalance();
-        BigDecimal amount = request.getAmount();
-        BigDecimal balanceResult = balance.add(amount);
-        if (balanceResult.signum() == -1) {
-            throw new BalanceUnavailableException("Insufficient funds");
-        }
-    }
 
     void buildAccount(Transaction transaction, UUID uuid) {
         Account account = accountService.findByUuid(uuid);

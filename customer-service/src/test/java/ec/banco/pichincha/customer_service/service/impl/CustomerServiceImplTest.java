@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -47,9 +48,14 @@ class CustomerServiceImplTest {
     void whenUserNotFoundThenReturnThrowError() {
         //arrange
         UUID uuid = UUID.randomUUID();
+        String expectedMessage = String.format("Customer doest no exists %s", uuid);
         when(repository.findById(any(UUID.class))).thenReturn(Optional.empty());
         //act - assert
-        assertThrows(CustomerNotFoundException.class, () -> service.show(uuid));
+
+        CustomerNotFoundException customerNotFoundException = assertThrows(CustomerNotFoundException.class, () -> service.show(uuid));
+
+        String actualMessage = customerNotFoundException.getMessage();
+        assertEquals(actualMessage, expectedMessage);
     }
 
     Customer buildCustomer() {

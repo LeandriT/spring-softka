@@ -60,6 +60,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountDto update(UUID uuid, AccountRequest request) {
+        this.validateCustomerExists(request.getCustomerUuid());
         String message = String.format("Account doest no exists %s", uuid);
         Account entity = repository.findById(uuid).orElseThrow(() -> new AccountNotFoundException(message));
         entity = mapper.updateModel(request, entity);
