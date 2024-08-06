@@ -56,7 +56,7 @@ public class TransactionServiceImpl implements TransactionService {
     public TransactionDto update(UUID uuid, TransactionRequest request) {
         this.validateTransactionType(request);
         String message = String.format("Transaction doest no exists %s", uuid);
-        Transaction entity = repository.findById(uuid).orElseThrow(() -> new AccountNotFoundException(message));
+        Transaction entity = repository.findById(uuid).orElseThrow(() -> new TransactionNotFoundException(message));
         this.buildAccount(entity, request.getAccountUuid());
         this.validateInsufficientFounds(entity.getAccount(), request);
         this.buildTransactionType(request, entity);
@@ -70,7 +70,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public void delete(UUID uuid) {
         String message = String.format("Transaction doest no exists %s", uuid);
-        Transaction entity = repository.findById(uuid).orElseThrow(() -> new AccountNotFoundException(message));
+        Transaction entity = repository.findById(uuid).orElseThrow(() -> new TransactionNotFoundException(message));
         repository.delete(entity);
     }
 
