@@ -6,8 +6,20 @@ services:
     container_name: account_service
     ports:
       - "8081:8080"
+    networks:
+      - services_network
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+        failure_action: rollback
+      rollback_config:
+        parallelism: 1
+        order: stop-first
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db_account:5432/account
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db_account:5432/accounts
       SPRING_DATASOURCE_USERNAME: account
       SPRING_DATASOURCE_PASSWORD: bxshaq06gi4hgdss
       CUSTOMER_SERVICE_URL: http://customer_service:8080
@@ -20,14 +32,20 @@ services:
     image: postgres:15
     container_name: db_account_postgres
     environment:
-      POSTGRES_DB: account
+      POSTGRES_DB: accounts
       POSTGRES_USER: account
       POSTGRES_PASSWORD: bxshaq06gi4hgdss
     ports:
       - "5434:5432"
+    networks:
+      - services_network
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: unless-stopped
 
 volumes:
   pgdata:
+
+networks:
+  services_network:
+    driver: bridge

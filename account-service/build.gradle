@@ -44,8 +44,9 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-
     implementation 'io.github.resilience4j:resilience4j-spring-boot2'
+    testImplementation 'com.h2database:h2'
+
 }
 
 tasks.named('test') {
