@@ -5,18 +5,21 @@ import ec.banco.pichincha.customer_service.dto.customer.v1.response.CustomerDto;
 import ec.banco.pichincha.customer_service.exception.CustomerIdentificationFoundException;
 import ec.banco.pichincha.customer_service.exception.CustomerIdentificationInvalidException;
 import ec.banco.pichincha.customer_service.exception.CustomerNotFoundException;
+import ec.banco.pichincha.customer_service.listener.accountTransaction.dto.TransactionCustomerDto;
 import ec.banco.pichincha.customer_service.mapper.CustomerMapper;
 import ec.banco.pichincha.customer_service.model.Customer;
 import ec.banco.pichincha.customer_service.repository.CustomerRepository;
 import ec.banco.pichincha.customer_service.service.CustomerService;
 import ec.banco.pichincha.customer_service.util.CedulaValidator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
@@ -59,6 +62,18 @@ public class CustomerServiceImpl implements CustomerService {
     public Page<CustomerDto> findAll(Pageable pageable) {
         return repository.findAll(pageable).map(customerMapper::toDto);
     }
+
+    @Override
+    public void eventTransactionAccountProcessed(TransactionCustomerDto transactionCustomerDto) {
+        String message = String.format(
+                "Account transaction event processed: id: %s amount: %.2f type: %s",
+                transactionCustomerDto.getCustomerUuid(),
+                transactionCustomerDto.getAmount(),
+                transactionCustomerDto.getTransactionType().getDisplayName()
+        );
+        log.info(message);
+    }
+
 
     void validateIdentificationExists(CustomerRequest request) {
         boolean exists = repository.existsByPersonIdentification(request.getIdentification());

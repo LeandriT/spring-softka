@@ -10,6 +10,8 @@ import ec.banco.pichincha.account_service.exception.TransactionNotFoundException
 import ec.banco.pichincha.account_service.mapper.TransactionMapper;
 import ec.banco.pichincha.account_service.model.Account;
 import ec.banco.pichincha.account_service.model.Transaction;
+import ec.banco.pichincha.account_service.producer.customer.EventAccountCustomerPublisher;
+import ec.banco.pichincha.account_service.producer.customer.dto.TransactionCustomerDto;
 import ec.banco.pichincha.account_service.repository.TransactionRepository;
 import ec.banco.pichincha.account_service.service.AccountService;
 import ec.banco.pichincha.account_service.service.TransactionService;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +34,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionMapper mapper;
     private final AccountService accountService;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final EventAccountCustomerPublisher eventAccountCustomerPublisher;
 
     @Override
     public TransactionDto show(UUID uuid) {
@@ -50,6 +54,7 @@ public class TransactionServiceImpl implements TransactionService {
         repository.save(entity);
         AccountBalanceDto accountBalanceDto = this.buildAccountBalanceDto(entity.getAccount().getUuid(), entity.getBalance());
         applicationEventPublisher.publishEvent(accountBalanceDto);
+        CompletableFuture.runAsync(() -> eventAccountCustomerPublisher.sendTransactionEvent(this.buildTransactionCustomerDto(entity)));
         return mapper.toDto(entity);
     }
 
@@ -125,5 +130,13 @@ public class TransactionServiceImpl implements TransactionService {
             }
         }
 
+    }
+
+    TransactionCustomerDto buildTransactionCustomerDto(Transaction transaction) {
+        return TransactionCustomerDto.builder()
+                .transactionType(TransactionTypeEnum.fromDisplayName(transaction.getTransactionType()))
+                .customerUuid(transaction.getAccount().getCustomerUuid())
+                .amount(transaction.getAmount())
+                .build();
     }
 }

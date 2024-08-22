@@ -25,7 +25,7 @@ public class ExceptionHandler {
     public ResponseEntity<ErrorMessage> handleCustomerIdentificationFoundException(CustomerIdentificationFoundException ex) {
         ErrorMessage errorResponse = new ErrorMessage();
         errorResponse.setMessage(ex.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.FOUND);
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(value = CustomerIdentificationInvalidException.class)

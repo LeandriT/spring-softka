@@ -13,4 +13,12 @@ public enum TransactionTypeEnum {
         this.displayName = displayName;
     }
 
+    public static TransactionTypeEnum fromDisplayName(String displayName) {
+        for (TransactionTypeEnum type : TransactionTypeEnum.values()) {
+            if (type.getDisplayName().equals(displayName)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("No enum constant with displayName " + displayName);
+    }
 }

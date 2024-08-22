@@ -2,6 +2,7 @@ package ec.banco.pichincha.customer_service.service;
 
 import ec.banco.pichincha.customer_service.dto.customer.v1.request.CustomerRequest;
 import ec.banco.pichincha.customer_service.dto.customer.v1.response.CustomerDto;
+import ec.banco.pichincha.customer_service.listener.accountTransaction.dto.TransactionCustomerDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,4 +18,6 @@ public interface CustomerService {
     void delete(UUID uuid);
 
     Page<CustomerDto> findAll(Pageable pageable);
+
+    void eventTransactionAccountProcessed(TransactionCustomerDto transactionCustomerDto);
 }

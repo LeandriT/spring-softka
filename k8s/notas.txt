@@ -10,7 +10,11 @@ docker build -t customer_service:latest .
 #account service
 gradle clean build
 docker build -t account_service:latest .
-
+kubectl get pods
 #EXPONER SERVICIO INTERNO
-kubectl port-forward account-service-77944f68d7-zd24b 30010:8080
-kubectl port-forward customer-service-6cf5d48c67-2r4mc 30011:8080
+kubectl port-forward customer-service-6cf5d48c67-nmhnr 30010:8080
+kubectl port-forward account-service-77944f68d7-v7hbc 30011:8080
+
+kubectl port-forward $(kubectl get pods -l app=customer-service -o custom-columns=":metadata.name" --no-headers | head -n 1) 30010:8080
+kubectl port-forward $(kubectl get pods -l app=account-service -o custom-columns=":metadata.name" --no-headers | head -n 1) 30011:8080
+
